@@ -9,6 +9,7 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [pokemonData, setPokemonData] = useState([])
   const [nextUrl, setNextUrl] = useState('')
+  const [prevUrl, setPrevUrl] = useState('')
 
   useEffect(() => {
     const fetchPokemonData = async () => {
@@ -16,6 +17,7 @@ function App() {
       loadPokemon(res.results)
       // console.log(res.next)
       setNextUrl(res.next)
+      setPrevUrl(res.previous)
       setLoading(false)
     }
     fetchPokemonData()
@@ -40,9 +42,19 @@ function App() {
     // console.log(data)
     await loadPokemon(data.results)
     setNextUrl(data.next)
+    setPrevUrl(data.previous)
     setLoading(false)
   }
-  const handlePrevPage = () => {}
+  const handlePrevPage = async () => {
+    if (!prevUrl) return
+
+    setLoading(true)
+    let data = await getAllPokemon(prevUrl)
+    await loadPokemon(data.results)
+    setNextUrl(data.next)
+    setPrevUrl(data.previous)
+    setLoading(false)
+  }
 
   return (
     <>
